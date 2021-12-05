@@ -1,0 +1,23 @@
+.root {
+    -fx-background-color: black;
+    -fx-text-background-color: white;
+    -fx-font-family: "Helvetica";
+}
+
+.label {
+    -fx-font-size: 35pt;
+}
+
+.button {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-font-size: 15pt;
+}
+
+.btnLeaderBoard {
+    -fx-font-size: 12pt;
+}
+
+.button:hover {
+    -fx-background-color: #7dff7f;
+}

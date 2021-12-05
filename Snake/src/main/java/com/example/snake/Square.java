@@ -1,9 +1,9 @@
-package com.example.snakev2;
+package com.example.snake;
 
 import javafx.scene.image.Image;
 
 public class Square {
-    private Image image;
+    private final Image image;
     private double x, y;
 
     public Square(String imageFilePath, double x, double y, int squareSize) {

@@ -60,7 +60,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.example.snakev2/com.example.snakev2.Main</mainClass>
+                            <mainClass>com.example.snakev2/com.example.snake.Main</mainClass>
                         </configuration>
                     </execution>
                 </executions>

@@ -1,4 +1,4 @@
-package com.example.snakev2;
+package com.example.snake;
 
 public class GreenSquare extends Square {
 
@@ -22,18 +22,15 @@ public class GreenSquare extends Square {
 
 
     public boolean collision(Square square) {
-        boolean hit = false;
-        if (this.getX2() > square.getX() &&
-              this.getX() < square.getX2() &&
-            this.getY2() > square.getY() &&
-          this.getY() < square.getY2()) {
-          hit = true;
-        }
-        //if (this.getX() == square.getX() && this.getY() == square.getY()) {
-        //    hit = true;
-        //}
+        return this.getX2() > square.getX() &&
+               this.getX() < square.getX2() &&
+               this.getY2() > square.getY() &&
+               this.getY() < square.getY2();
+    }
 
-        return hit;
+    public boolean outOfBounds(int screenWidth, int screenHeight) {
+        return getX() < 0 || getY() < 0 || getX() > screenWidth - getImage().getWidth() ||
+               getY() > screenHeight - getImage().getWidth();
     }
 
 }
