@@ -32,10 +32,6 @@ public class Main extends Application {
         Scene welcomeScene = new Scene(paneWelcome, screenWidth, screenHeight);
         welcomeScene.getStylesheets().add("styles.css");
 
-        AnchorPane paneLeaderboard = new AnchorPane();
-        Scene leaderboardScene = new Scene(paneLeaderboard, screenWidth, screenHeight);
-        leaderboardScene.getStylesheets().add("styles.css");
-
         Group mainRoot = new Group();
         Scene mainScene = new Scene(mainRoot);
 
@@ -46,16 +42,13 @@ public class Main extends Application {
         Canvas mainCanvas = new Canvas(screenWidth, screenHeight);
         mainRoot.getChildren().add(mainCanvas);
 
-        //////////////////// Welcome Scene /////////////////////////
-
+        // Welcome scene
         Label welcomeText = new Label("Snake Game");
+        Label inputType = new Label("Controls: W, A, S, and D keys");
+        inputType.getStyleClass().add("inputType");
 
         Button btnPlayNow = new Button("Play now!");
         btnPlayNow.setOnAction((ActionEvent event) -> stage.setScene(mainScene));
-
-        Button btnLeaderboard = new Button("Leaderboard");
-        btnLeaderboard.getStyleClass().add("btnLeaderBoard");
-        btnLeaderboard.setOnAction((ActionEvent event) -> stage.setScene(leaderboardScene));
 
         AnchorPane.setLeftAnchor(welcomeText, (screenWidth / 2.0) - 133);
         AnchorPane.setTopAnchor(welcomeText, 30.0);
@@ -63,30 +56,12 @@ public class Main extends Application {
         AnchorPane.setLeftAnchor(btnPlayNow, (screenWidth / 2.0) - 63);
         AnchorPane.setTopAnchor(btnPlayNow, 120.0);
 
-        AnchorPane.setLeftAnchor(btnLeaderboard, (screenWidth / 2.0) - 63);
-        AnchorPane.setTopAnchor(btnLeaderboard, 180.0);
+        AnchorPane.setLeftAnchor(inputType, (screenWidth / 2.0) - 88);
+        AnchorPane.setBottomAnchor(inputType, 20.0);
 
-        paneWelcome.getChildren().addAll(welcomeText, btnPlayNow, btnLeaderboard);
+        paneWelcome.getChildren().addAll(welcomeText, btnPlayNow, inputType);
 
-        ////////////////// Leaderboard Scene //////////////////////
-
-        Label labelLeaderboard = new Label("Leaderboard");
-        Button btnBack = new Button("Back");
-        btnBack.setOnAction((ActionEvent event) -> stage.setScene(welcomeScene));
-
-        AnchorPane.setLeftAnchor(labelLeaderboard, (screenWidth / 2.0) - 136);
-        AnchorPane.setTopAnchor(labelLeaderboard, 30.0);
-
-        AnchorPane.setRightAnchor(btnBack, 30.0);
-        AnchorPane.setBottomAnchor(btnBack, 30.0);
-
-        paneLeaderboard.getChildren().addAll(labelLeaderboard, btnBack);
-
-        /////////////////// Game Over Scene ////////////////////////
-
-        //////////////// New High Score Scene //////////////////////
-
-        ///////////////////// Main Scene ///////////////////////////
+        // Main scene
         GraphicsContext gcMain = mainCanvas.getGraphicsContext2D();
         gcMain.setFill(Color.BLACK);
         gcMain.fillRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
@@ -148,8 +123,7 @@ public class Main extends Application {
                     stage.setScene(welcomeScene);
                 }
 
-                //todo: problem: snake may be moving faster on computers w/ higher FPS
-
+                // Snake cannot move in opposite direction
                 GameManager.checkOppositeDirection(input, previousInput);
 
                 // Moves snake up, down, left, or right

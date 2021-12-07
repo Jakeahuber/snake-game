@@ -14,8 +14,8 @@
     -fx-font-size: 15pt;
 }
 
-.btnLeaderBoard {
-    -fx-font-size: 12pt;
+.inputType {
+    -fx-font-size: 10pt;
 }
 
 .button:hover {

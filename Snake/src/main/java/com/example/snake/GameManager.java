@@ -26,11 +26,7 @@ public class GameManager {
         }
     }
 
-    // todo: check if same location as previous white square
-    // todo: check if same location as position of snake
-
-    /* Checks if the white square is in the same location as the snake or previous white square, and if it is too
-    close to the counter */
+    // Checks if the white square is in the same location as the snake and if it's too close to the counter
     public static boolean validRandomCoordinate(int x, int y, ArrayList<GreenSquare> snake, int screenWidth, int screenHeight, int squareSize) {
         Square whiteSquareTest = new Square("white-square.png", x, y, squareSize);
         for (GreenSquare greenSquare : snake) {
@@ -49,6 +45,7 @@ public class GameManager {
         return true;
     }
 
+    // Moves each square of the snake to the previous location of the square in front of the square.
     public static void moveSnake(GreenSquare snakeHead, ArrayList<GreenSquare> snake, GraphicsContext gc, Image blackImage,
                                  double distance, String direction) {
 
@@ -65,6 +62,7 @@ public class GameManager {
         }
     }
 
+    // Moves the first snake image and sets a previous location for it
     public static void moveSnakeHead(GreenSquare snakeHead, GraphicsContext gc, Image blackImage, double distance,
                                      String direction) {
 
