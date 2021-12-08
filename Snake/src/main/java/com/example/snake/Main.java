@@ -110,7 +110,6 @@ public class Main extends Application {
         new AnimationTimer() {
             public void handle(long currentNanoTime)
             {
-
                 // Displays score in top right corner
                 gcMain.setFill(Color.WHITE);
                 gcMain.setTextAlign(TextAlignment.RIGHT);
@@ -144,8 +143,8 @@ public class Main extends Application {
                 if (snakeHead[0].collision(whiteSquares.get(0))) {
                     gcMain.drawImage(blackImage, whiteSquares.get(0).getX(), whiteSquares.get(0).getY());
 
-                    // Snake grows by 10 the first time it scores, and 2 every other time.
-                    int squaresToBeAdded = 2;
+                    // Snake grows by 10 the first time it scores, and 3 every other time.
+                    int squaresToBeAdded = 3;
                     if (firstScore[0]) {
                         squaresToBeAdded = 10;
                         firstScore[0] = false;
@@ -173,6 +172,9 @@ public class Main extends Application {
                     // Clears previous score and increments by one
                     gcMain.drawImage(new Image("black-square.png", 100, 15, false, false), screenWidth- 100, 8);
                     score[0]++;
+
+                    // Snake speed increases with every score
+                    snakeSpeed[0] += 0.01;
                 }
 
                 // Game ends if snake collides into itself
@@ -182,11 +184,6 @@ public class Main extends Application {
                                 firstMove, originalSnakeSpeed, firstScore, gcMain, blackImage, screenWidth, screenHeight, whiteSquares);
                         stage.setScene(welcomeScene);
                     }
-                }
-
-                // Snake speed increases every 5 points
-                if (score[0] % 5 == 0 && score[0] != 0) {
-                    snakeSpeed[0] += 0.003;
                 }
             }
         }.start();
