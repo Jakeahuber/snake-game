@@ -174,7 +174,7 @@ public class Main extends Application {
                     score[0]++;
 
                     // Snake speed increases with every score
-                    snakeSpeed[0] += 0.01;
+                    snakeSpeed[0] += 0.03;
                 }
 
                 // Game ends if snake collides into itself
