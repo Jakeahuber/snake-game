@@ -49,12 +49,18 @@ public class PlayerScore {
 
         int counter = 0;
         for (PlayerScore playerScore : leaderboard) {
-            Label label = new Label(playerScore.getName() + "...." + playerScore.getScore());
-            label.getStyleClass().add("leaderboardLabel");
-            AnchorPane.setLeftAnchor(label, 50.0);
-            AnchorPane.setTopAnchor(label, 100.0 + counter);
+
+            Label username = new Label(playerScore.getName());
+            Label score = new Label(Integer.toString(playerScore.getScore()));
+
+            username.getStyleClass().add("leaderboardLabel");
+            score.getStyleClass().add("leaderboardLabel");
+            AnchorPane.setLeftAnchor(username, (screenWidth / 2.0) - 135);
+            AnchorPane.setTopAnchor(username, 100.0 + counter);
+            AnchorPane.setRightAnchor(score, (screenWidth / 2.0) - 125);
+            AnchorPane.setTopAnchor(score, 100.0 + counter);
             counter += 20;
-            paneLeaderboard.getChildren().addAll(label);
+            paneLeaderboard.getChildren().addAll(username, score);
         }
     }
 
@@ -72,10 +78,10 @@ public class PlayerScore {
         }
     }
 
+    // Returns true if there is a new high score
     public static boolean newHighScore(int score, Hashtable<Integer, PlayerScore> scoreHash) {
         for (int i = 1; i < 11; i++) {
             if (scoreHash.containsKey(i)) {
-                // Create a new PlayerScore object if there is a new high score
                 if (score > scoreHash.get(i).getScore()) {
                     return true;
                 }
@@ -87,7 +93,7 @@ public class PlayerScore {
         return false;
     }
 
-    // Adds score into the hash table if it's a new high score
+    // Adds new high score into the hash table
     public static void updateTable(PlayerScore player, Hashtable<Integer, PlayerScore> scoreHash) {
         for (int i = 1; i < 11; i++) {
             if (scoreHash.containsKey(i)) {
@@ -106,7 +112,6 @@ public class PlayerScore {
 
     // Updates rankings inside the hash table when a new score is added.
     public static void updateScores(int start, Hashtable<Integer, PlayerScore> scoreHash) {
-
         Hashtable<Integer, PlayerScore> temp = new Hashtable<>();
         Enumeration<Integer> e = scoreHash.keys();
         while (e.hasMoreElements()) {

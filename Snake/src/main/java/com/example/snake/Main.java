@@ -246,6 +246,7 @@ public class Main extends Application {
         // New high score scene
         Label newHighScoreLabel = new Label("New High Score!");
         TextField usernameInput = new TextField();
+        usernameInput.setPrefWidth(160);
         Label usernameLabel = new Label("Username: ");
         usernameLabel.getStyleClass().add("smallText");
         Label labelInvalidInput = new Label();
@@ -259,8 +260,11 @@ public class Main extends Application {
                 if (username.equals("")) {
                     throw new CustomException("Please enter a username", labelInvalidInput);
                 }
-                if (username.length() > 20) {
-                    throw new CustomException("Username may not exceed 20 characters", labelInvalidInput);
+                if (username.length() > 15) {
+                    throw new CustomException("Username may not exceed 15 characters", labelInvalidInput);
+                }
+                if (username.length() <= 2) {
+                    throw new CustomException("Username must be more than 2 characters", labelInvalidInput);
                 }
                 for (int i = 0; i < username.length(); i++) {
                     if (!Character.isLetterOrDigit(username.charAt(i))) {
@@ -276,6 +280,7 @@ public class Main extends Application {
                         firstMove, originalSnakeSpeed, firstScore, gcMain, blackImage, screenWidth, screenHeight, whiteSquares);
                 stage.setScene(welcomeScene);
                 usernameInput.setText("");
+                labelInvalidInput.setText("");
 
             } catch (CustomException ignored) {}
         });
@@ -283,17 +288,17 @@ public class Main extends Application {
         AnchorPane.setLeftAnchor(newHighScoreLabel, (screenWidth / 2.0) - 170);
         AnchorPane.setTopAnchor(newHighScoreLabel, 30.0);
 
-        AnchorPane.setLeftAnchor(usernameLabel, 30.0);
+        AnchorPane.setLeftAnchor(usernameLabel, (screenWidth / 2.0) - 170);
         AnchorPane.setTopAnchor(usernameLabel, 120.0);
 
-        AnchorPane.setLeftAnchor(usernameInput, (screenWidth / 2.0) - 170);
+        AnchorPane.setLeftAnchor(usernameInput, (screenWidth / 2.0) - 70);
         AnchorPane.setTopAnchor(usernameInput, 120.0);
 
-        AnchorPane.setLeftAnchor(labelInvalidInput, 30.0);
-        AnchorPane.setTopAnchor(labelInvalidInput, 180.0);
+        AnchorPane.setLeftAnchor(labelInvalidInput, (screenWidth / 2.0) - 170);
+        AnchorPane.setTopAnchor(labelInvalidInput, 160.0);
 
-        AnchorPane.setLeftAnchor(submitBtn, 30.0);
-        AnchorPane.setTopAnchor(submitBtn, 220.0);
+        AnchorPane.setRightAnchor(submitBtn, (screenWidth / 2.0) - 165);
+        AnchorPane.setTopAnchor(submitBtn, 120.0);
 
         paneNewHighScore.getChildren().addAll(newHighScoreLabel, usernameInput, usernameLabel, submitBtn,
                 labelInvalidInput);
