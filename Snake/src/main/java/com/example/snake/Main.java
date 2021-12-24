@@ -19,7 +19,6 @@ import javafx.stage.Stage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Hashtable;
 
 public class Main extends Application {
@@ -72,17 +71,6 @@ public class Main extends Application {
         }
         catch (Exception ex) {
             System.out.println("Couldn't read file.");
-        }
-
-        Enumeration<Integer> ef = scoreHash.keys();
-
-        while (ef.hasMoreElements()) {
-
-            // Getting the key of a particular entry
-            int key = ef.nextElement();
-
-            // Print and display the Rank and Name
-            System.out.println("Key : " + key + " Value : " + scoreHash.get(key));
         }
 
         ArrayList<PlayerScore> leaderboard = new ArrayList<>();
