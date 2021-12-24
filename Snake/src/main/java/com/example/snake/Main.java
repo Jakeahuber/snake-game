@@ -9,13 +9,18 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 public class Main extends Application {
     @Override
@@ -32,6 +37,14 @@ public class Main extends Application {
         Scene welcomeScene = new Scene(paneWelcome, screenWidth, screenHeight);
         welcomeScene.getStylesheets().add("styles.css");
 
+        AnchorPane paneLeaderboard = new AnchorPane();
+        Scene leaderboardScene = new Scene(paneLeaderboard, screenWidth, screenHeight);
+        leaderboardScene.getStylesheets().add("styles.css");
+
+        AnchorPane paneNewHighScore = new AnchorPane();
+        Scene newHighScoreScene = new Scene(paneNewHighScore, screenWidth, screenHeight);
+        newHighScoreScene.getStylesheets().add("styles.css");
+
         Group mainRoot = new Group();
         Scene mainScene = new Scene(mainRoot);
 
@@ -42,6 +55,39 @@ public class Main extends Application {
         Canvas mainCanvas = new Canvas(screenWidth, screenHeight);
         mainRoot.getChildren().add(mainCanvas);
 
+        /* Reads leaderboard.csv and adds values to scoreHash Hashtable
+           The key is the player's rank and the value is the corresponding PlayerScore object */
+        Hashtable<Integer, PlayerScore> scoreHash = new Hashtable<>();
+        try {
+            FileReader fileReader = new FileReader("Snake/src/main/resources/leaderboard.csv");
+            BufferedReader reader = new BufferedReader(fileReader);
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] cs = line.split(",");
+                PlayerScore player = new PlayerScore(cs[0], Integer.parseInt(cs[1]));
+                scoreHash.put(Integer.parseInt(cs[2]), player);
+            }
+            reader.close();
+        }
+        catch (Exception ex) {
+            System.out.println("Couldn't read file.");
+        }
+
+        Enumeration<Integer> ef = scoreHash.keys();
+
+        while (ef.hasMoreElements()) {
+
+            // Getting the key of a particular entry
+            int key = ef.nextElement();
+
+            // Print and display the Rank and Name
+            System.out.println("Key : " + key + " Value : " + scoreHash.get(key));
+        }
+
+        ArrayList<PlayerScore> leaderboard = new ArrayList<>();
+        PlayerScore.createLeaderboard(leaderboard, scoreHash);
+
         // Welcome scene
         Label welcomeText = new Label("Snake Game");
         Label inputType = new Label("Controls: W, A, S, and D keys");
@@ -50,16 +96,27 @@ public class Main extends Application {
         Button btnPlayNow = new Button("Play now!");
         btnPlayNow.setOnAction((ActionEvent event) -> stage.setScene(mainScene));
 
+        Button btnLeaderboard = new Button("Leaderboard");
+        btnLeaderboard.setOnAction((ActionEvent event) -> {
+                    paneLeaderboard.getChildren().clear();
+                    PlayerScore.updateLeaderboard(leaderboard, paneLeaderboard, screenWidth, welcomeScene, stage);
+                    stage.setScene(leaderboardScene);
+                });
+        btnLeaderboard.getStyleClass().add("btnLeaderboard");
+
         AnchorPane.setLeftAnchor(welcomeText, (screenWidth / 2.0) - 133);
         AnchorPane.setTopAnchor(welcomeText, 30.0);
 
         AnchorPane.setLeftAnchor(btnPlayNow, (screenWidth / 2.0) - 63);
         AnchorPane.setTopAnchor(btnPlayNow, 120.0);
 
+        AnchorPane.setLeftAnchor(btnLeaderboard, (screenWidth / 2.0) - 63);
+        AnchorPane.setTopAnchor(btnLeaderboard, 180.0);
+
         AnchorPane.setLeftAnchor(inputType, (screenWidth / 2.0) - 88);
         AnchorPane.setBottomAnchor(inputType, 20.0);
 
-        paneWelcome.getChildren().addAll(welcomeText, btnPlayNow, inputType);
+        paneWelcome.getChildren().addAll(welcomeText, btnPlayNow, btnLeaderboard, inputType);
 
         // Main scene
         GraphicsContext gcMain = mainCanvas.getGraphicsContext2D();
@@ -117,9 +174,14 @@ public class Main extends Application {
 
                 // Game ends if snake goes out of bounds
                 if (snakeHead[0].outOfBounds(screenWidth, screenHeight)) {
-                    GameManager.resetGame(snakeHead, snake, squareSize, score, snakeSpeed, input, previousInput,
-                                          firstMove, originalSnakeSpeed, firstScore, gcMain, blackImage, screenWidth, screenHeight, whiteSquares);
-                    stage.setScene(welcomeScene);
+                    if (PlayerScore.newHighScore(score[0], scoreHash)) {
+                        stage.setScene(newHighScoreScene);
+                    }
+                    else {
+                        GameManager.resetGame(snakeHead, snake, squareSize, score, snakeSpeed, input, previousInput,
+                                firstMove, originalSnakeSpeed, firstScore, gcMain, blackImage, screenWidth, screenHeight, whiteSquares);
+                        stage.setScene(welcomeScene);
+                    }
                 }
 
                 // Snake cannot move in opposite direction
@@ -180,13 +242,73 @@ public class Main extends Application {
                 // Game ends if snake collides into itself
                 for (int i = 10; i < snake.size(); i++) {
                     if (snakeHead[0].collision(snake.get(i))) {
-                        GameManager.resetGame(snakeHead, snake, squareSize, score, snakeSpeed, input, previousInput,
-                                firstMove, originalSnakeSpeed, firstScore, gcMain, blackImage, screenWidth, screenHeight, whiteSquares);
-                        stage.setScene(welcomeScene);
+                        if (PlayerScore.newHighScore(score[0], scoreHash)) {
+                            stage.setScene(newHighScoreScene);
+                        }
+                        else {
+                            GameManager.resetGame(snakeHead, snake, squareSize, score, snakeSpeed, input, previousInput,
+                                    firstMove, originalSnakeSpeed, firstScore, gcMain, blackImage, screenWidth, screenHeight, whiteSquares);
+                            stage.setScene(welcomeScene);
+                        }
                     }
                 }
             }
         }.start();
+
+        // New high score scene
+        Label newHighScoreLabel = new Label("New High Score!");
+        TextField usernameInput = new TextField();
+        Label usernameLabel = new Label("Username: ");
+        usernameLabel.getStyleClass().add("smallText");
+        Label labelInvalidInput = new Label();
+        labelInvalidInput.getStyleClass().add("smallText");
+
+        Button submitBtn = new Button("Submit");
+        submitBtn.getStyleClass().add("submitBtn");
+        submitBtn.setOnAction((ActionEvent event) -> {
+            try {
+                String username = usernameInput.getText();
+                if (username.equals("")) {
+                    throw new CustomException("Please enter a username", labelInvalidInput);
+                }
+                if (username.length() > 20) {
+                    throw new CustomException("Username may not exceed 20 characters", labelInvalidInput);
+                }
+                for (int i = 0; i < username.length(); i++) {
+                    if (!Character.isLetterOrDigit(username.charAt(i))) {
+                        throw new CustomException("Username may only contain letters or digits", labelInvalidInput);
+                    }
+                }
+                PlayerScore player = new PlayerScore(username, score[0]);
+                PlayerScore.updateTable(player, scoreHash, stage, newHighScoreScene);
+                PlayerScore.createLeaderboard(leaderboard, scoreHash);
+                PlayerScore.saveLeaderboard(leaderboard);
+
+                GameManager.resetGame(snakeHead, snake, squareSize, score, snakeSpeed, input, previousInput,
+                        firstMove, originalSnakeSpeed, firstScore, gcMain, blackImage, screenWidth, screenHeight, whiteSquares);
+                stage.setScene(welcomeScene);
+                usernameInput.setText("");
+
+            } catch (CustomException ignored) {}
+        });
+
+        AnchorPane.setLeftAnchor(newHighScoreLabel, (screenWidth / 2.0) - 170);
+        AnchorPane.setTopAnchor(newHighScoreLabel, 30.0);
+
+        AnchorPane.setLeftAnchor(usernameLabel, 30.0);
+        AnchorPane.setTopAnchor(usernameLabel, 120.0);
+
+        AnchorPane.setLeftAnchor(usernameInput, (screenWidth / 2.0) - 170);
+        AnchorPane.setTopAnchor(usernameInput, 120.0);
+
+        AnchorPane.setLeftAnchor(labelInvalidInput, 30.0);
+        AnchorPane.setTopAnchor(labelInvalidInput, 180.0);
+
+        AnchorPane.setLeftAnchor(submitBtn, 30.0);
+        AnchorPane.setTopAnchor(submitBtn, 220.0);
+
+        paneNewHighScore.getChildren().addAll(newHighScoreLabel, usernameInput, usernameLabel, submitBtn,
+                labelInvalidInput);
 
         stage.setTitle("Snake");
         stage.show();

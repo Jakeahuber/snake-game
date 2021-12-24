@@ -14,10 +14,26 @@
     -fx-font-size: 15pt;
 }
 
+.button:hover {
+    -fx-background-color: #7dff7f;
+}
+
+.btnLeaderboard {
+    -fx-font-size: 12pt;
+}
+
 .inputType {
     -fx-font-size: 10pt;
 }
 
-.button:hover {
-    -fx-background-color: #7dff7f;
+.leaderboardLabel {
+    -fx-font-size: 12pt;
+}
+
+.smallText {
+    -fx-font-size: 12pt;
+}
+
+.submitBtn {
+    -fx-font-size: 10pt;
 }
