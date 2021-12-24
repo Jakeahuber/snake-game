@@ -280,7 +280,7 @@ public class Main extends Application {
                     }
                 }
                 PlayerScore player = new PlayerScore(username, score[0]);
-                PlayerScore.updateTable(player, scoreHash, stage, newHighScoreScene);
+                PlayerScore.updateTable(player, scoreHash);
                 PlayerScore.createLeaderboard(leaderboard, scoreHash);
                 PlayerScore.saveLeaderboard(leaderboard);
 

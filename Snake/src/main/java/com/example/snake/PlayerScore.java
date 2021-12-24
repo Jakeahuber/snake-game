@@ -87,25 +87,17 @@ public class PlayerScore {
         return false;
     }
 
-    public static void getNewPlayerScore(Stage stage, Scene newHighScoreScene) {
-        stage.setScene(newHighScoreScene);
-    }
-
     // Adds score into the hash table if it's a new high score
-    public static void updateTable(PlayerScore player, Hashtable<Integer, PlayerScore> scoreHash,
-                                   Stage stage, Scene newHighScoreScene) {
+    public static void updateTable(PlayerScore player, Hashtable<Integer, PlayerScore> scoreHash) {
         for (int i = 1; i < 11; i++) {
             if (scoreHash.containsKey(i)) {
-                // Create a new PlayerScore object if there is a new high score
                 if (player.getScore() > scoreHash.get(i).getScore()) {
-                    getNewPlayerScore(stage, newHighScoreScene);
                     updateScores(i, scoreHash);
                     scoreHash.put(i, player);
                     break;
                 }
             }
             else {
-                getNewPlayerScore(stage, newHighScoreScene);
                 scoreHash.put(i, player);
                 break;
             }
